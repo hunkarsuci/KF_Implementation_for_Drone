@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kf_drone"
+version = "0.1.0"
+description = "Error-State Kalman Filter for drone state estimation"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+]
+
+[project.optional-dependencies]
+demo = [
+    "matplotlib>=3.5",
+]
+dev = [
+    "pytest>=7.4",
+    "ruff>=0.4",
+]
+all = [
+    "kf_drone[demo,dev]",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+# Scientific code uses standard math notation (R, H, K, P, F_x, G, Q, etc.)
+# test_* functions with underscores are pytest convention
+ignore = [
+    "N806",  # non-lowercase variable names (R, H, K, P, F_x for matrices)
+    "N803",  # non-lowercase argument names (R, H for math args)
+    "N802",  # non-lowercase function names (test_init_P_diag is ok)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
