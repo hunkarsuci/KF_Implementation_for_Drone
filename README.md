@@ -25,7 +25,7 @@ This project implements an **Error-State Kalman Filter** for estimating a drone'
 | Gyro bias | 3 | Rad/s |
 | Accel bias | 3 | m/s² |
 
-The **15-DOF error state** (δp, δv, δθ, δb_g, δb_a) is estimated by a linear Kalman filter, while the nominal state is propagated non-linearly. After each correction, the error is injected into the nominal state and reset to zero — the core ESKF pattern.
+The **15-DOF error state** (δp, δv, δθ, δb_g, δb_a) is estimated by a linear Kalman filter, while the nominal state is propagated non-linearly. After each correction, the error is injected into the nominal state and reset to zero the core ESKF pattern.
 
 ---
 
