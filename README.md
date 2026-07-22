@@ -9,7 +9,7 @@
 [![SciPy](https://img.shields.io/badge/scipy-1.11+-8CAAE6.svg)](https://scipy.org/)
 [![Framework](https://img.shields.io/badge/framework-ESKF-red.svg)](#)
 
-**Error-State Kalman Filter (ESKF) for drone state estimation** — a clean, well-tested Python implementation following Joan Solà's definitive [tutorial](https://arxiv.org/abs/1711.02508).
+**Error-State Kalman Filter (ESKF) for drone state estimation** a clean, well-tested Python implementation following Joan Solà's definitive [tutorial](https://arxiv.org/abs/1711.02508).
 
 ---
 
