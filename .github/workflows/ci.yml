@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - uses: actions/checkout@v4
@@ -44,3 +44,6 @@ jobs:
 
       - name: Lint
         run: ruff check src/ tests/ examples/
+
+      - name: Format check
+        run: ruff format --check src/ tests/ examples/

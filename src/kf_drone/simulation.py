@@ -75,9 +75,9 @@ def generate_trajectory(
     v = np.column_stack([vx, vy, vz])
 
     # --- Acceleration ---
-    ax = -amplitude_xy * omega_xy ** 2 * np.sin(omega_xy * t)
-    ay = -amplitude_xy * 4.0 * omega_xy ** 2 * np.sin(2.0 * omega_xy * t)
-    az = -amplitude_z * omega_z ** 2 * np.sin(omega_z * t)
+    ax = -amplitude_xy * omega_xy**2 * np.sin(omega_xy * t)
+    ay = -amplitude_xy * 4.0 * omega_xy**2 * np.sin(2.0 * omega_xy * t)
+    az = -amplitude_z * omega_z**2 * np.sin(omega_z * t)
     a = np.column_stack([ax, ay, az])
 
     # --- Attitude & angular velocity ---
@@ -182,12 +182,14 @@ def _quat_mult(
     else:
         w1, x1, y1, z1 = q1
     w2, x2, y2, z2 = q2
-    return np.array([
-        w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2,
-        w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2,
-        w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
-        w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2,
-    ])
+    return np.array(
+        [
+            w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2,
+            w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2,
+            w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
+            w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2,
+        ]
+    )
 
 
 def _quat_to_omega(dq: NDArray[np.float64], dt: float) -> NDArray[np.float64]:

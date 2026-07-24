@@ -4,7 +4,7 @@
 [![CI](https://github.com/hunkarsuci/KF_Implementation_for_Drone/actions/workflows/ci.yml/badge.svg)](https://github.com/hunkarsuci/KF_Implementation_for_Drone/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-80%20passed-brightgreen.svg)](tests/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-261230.svg)](https://github.com/astral-sh/ruff)
 [![NumPy](https://img.shields.io/badge/numpy-1.26+-013243.svg)](https://numpy.org/)
 [![SciPy](https://img.shields.io/badge/scipy-1.11+-8CAAE6.svg)](https://scipy.org/)
 [![Framework](https://img.shields.io/badge/framework-ESKF-red.svg)](#)

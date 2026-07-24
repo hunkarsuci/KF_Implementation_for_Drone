@@ -39,12 +39,8 @@ class IMUParams:
         self.sigma_a = sigma_a
         self.sigma_bg = sigma_bg
         self.sigma_ba = sigma_ba
-        self.b_g_init = (
-            np.zeros(3, dtype=np.float64) if b_g_init is None else b_g_init.copy()
-        )
-        self.b_a_init = (
-            np.zeros(3, dtype=np.float64) if b_a_init is None else b_a_init.copy()
-        )
+        self.b_g_init = np.zeros(3, dtype=np.float64) if b_g_init is None else b_g_init.copy()
+        self.b_a_init = np.zeros(3, dtype=np.float64) if b_a_init is None else b_a_init.copy()
 
 
 class GPSParams:
@@ -176,8 +172,6 @@ def generate_baro_measurement(
 
 
 def compute_true_imu(
-    p: NDArray[np.float64],
-    v: NDArray[np.float64],
     q: NDArray[np.float64],
     a_body: NDArray[np.float64],
     w_body: NDArray[np.float64],
@@ -189,8 +183,6 @@ def compute_true_imu(
     acceleration in body frame:  a_sf = Rᵀ · (a_world - g_world).
 
     Args:
-        p: Position in world frame (unused; included for uniformity).
-        v: Velocity in world frame (unused).
         q: Attitude quaternion (body → world).
         a_body: True acceleration in body frame (m/s²).
         w_body: True angular velocity in body frame (rad/s).

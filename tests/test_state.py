@@ -120,11 +120,13 @@ class TestErrorResetJacobian:
         delta_theta = np.array([0.1, -0.2, 0.05])
         G = error_reset_jacobian(delta_theta)
         # Attitude block should be I - 0.5 * skew(delta_theta)
-        expected_block = np.eye(3) - 0.5 * np.array([
-            [0, -delta_theta[2], delta_theta[1]],
-            [delta_theta[2], 0, -delta_theta[0]],
-            [-delta_theta[1], delta_theta[0], 0],
-        ])
+        expected_block = np.eye(3) - 0.5 * np.array(
+            [
+                [0, -delta_theta[2], delta_theta[1]],
+                [delta_theta[2], 0, -delta_theta[0]],
+                [-delta_theta[1], delta_theta[0], 0],
+            ]
+        )
         np.testing.assert_allclose(G[6:9, 6:9], expected_block, atol=1e-14)
 
     def test_non_attitude_blocks_are_identity(self):

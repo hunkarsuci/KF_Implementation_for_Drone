@@ -69,9 +69,7 @@ class TestIMUMeasurement:
     def test_bias_random_walk_accumulates(self):
         """Bias random walk changes the bias each step."""
         rng = np.random.default_rng(456)
-        params = IMUParams(
-            sigma_g=0.0, sigma_a=0.0, sigma_bg=0.1, sigma_ba=0.2
-        )
+        params = IMUParams(sigma_g=0.0, sigma_a=0.0, sigma_bg=0.1, sigma_ba=0.2)
         true_w = np.zeros(3)
         true_a = np.zeros(3)
         b_g = np.zeros(3)
@@ -168,16 +166,15 @@ class TestBaroMeasurement:
 class TestComputeTrueIMU:
     def test_hovering(self):
         """Hover: zero acceleration, gravity alone → specific force = Rᵀ·g."""
-        p = np.zeros(3)
-        v = np.zeros(3)
         q = quat_exp(np.array([0.1, 0.2, 0.3]))  # arbitrary attitude
         a_body = np.zeros(3)
         w_body = np.array([0.0, 0.0, 0.1])
 
-        sf, w = compute_true_imu(p, v, q, a_body, w_body)
+        sf, w = compute_true_imu(q, a_body, w_body)
         np.testing.assert_allclose(w, w_body)
         # Specific force in body frame should be -g_body
         from kf_drone.utils import quat_to_rotmat
+
         R = quat_to_rotmat(q)
         g_w = np.array([0.0, 0.0, 9.81])
         expected_sf = -R.T @ g_w
@@ -185,13 +182,11 @@ class TestComputeTrueIMU:
 
     def test_accelerating_up(self):
         """Accelerating upward reduces the specific force magnitude."""
-        p = np.zeros(3)
-        v = np.zeros(3)
         q = np.array([1.0, 0.0, 0.0, 0.0])  # level attitude
         a_body = np.array([0.0, 0.0, -5.0])  # accelerating up in NED (z negative = up)
         w_body = np.zeros(3)
 
-        sf, _ = compute_true_imu(p, v, q, a_body, w_body)
+        sf, _ = compute_true_imu(q, a_body, w_body)
         # In level flight, body = world. g_w = [0, 0, 9.81], a_body = [0, 0, -5]
         # sf = a_body - Rᵀ·g_w = [0, 0, -5] - [0, 0, 9.81] = [0, 0, -14.81]
         np.testing.assert_allclose(sf, [0, 0, -14.81], atol=1e-10)

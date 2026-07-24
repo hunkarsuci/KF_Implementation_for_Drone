@@ -250,8 +250,13 @@ def create_animation(
     # ---- Static elements ----
     # Full true trajectory (faded)
     ax_3d.plot(
-        p_true[:, 0], p_true[:, 1], p_true[:, 2],
-        color="blue", alpha=0.3, linewidth=0.8, label="True",
+        p_true[:, 0],
+        p_true[:, 1],
+        p_true[:, 2],
+        color="blue",
+        alpha=0.3,
+        linewidth=0.8,
+        label="True",
     )
 
     # Full error traces (faded)
@@ -268,24 +273,28 @@ def create_animation(
             t,
             -3 * hist["pos_std"][:, j],
             3 * hist["pos_std"][:, j],
-            color=c, alpha=0.08,
+            color=c,
+            alpha=0.08,
         )
         ax_verr.fill_between(
             t,
             -3 * hist["vel_std"][:, j],
             3 * hist["vel_std"][:, j],
-            color=c, alpha=0.08,
+            color=c,
+            alpha=0.08,
         )
         ax_aerr.fill_between(
             t,
             np.degrees(-3 * hist["att_std"][:, j]),
             np.degrees(3 * hist["att_std"][:, j]),
-            color=c, alpha=0.08,
+            color=c,
+            alpha=0.08,
         )
 
     # Legend for error plots
     for ax_e, title in [(ax_perr, "Pos"), (ax_verr, "Vel"), (ax_aerr, "Att")]:
         from matplotlib.lines import Line2D
+
         custom_lines = [Line2D([0], [0], color=c, lw=2) for c in colors]
         ax_e.legend(custom_lines, labels_xyz, loc="upper right", fontsize=7)
 
@@ -296,15 +305,9 @@ def create_animation(
     ax_3d.legend(loc="upper left", fontsize=7)
 
     # Progress lines on error plots
-    progress_lines_perr = [
-        ax_perr.plot([], [], color=c, linewidth=1.5)[0] for c in colors
-    ]
-    progress_lines_verr = [
-        ax_verr.plot([], [], color=c, linewidth=1.5)[0] for c in colors
-    ]
-    progress_lines_aerr = [
-        ax_aerr.plot([], [], color=c, linewidth=1.5)[0] for c in colors
-    ]
+    progress_lines_perr = [ax_perr.plot([], [], color=c, linewidth=1.5)[0] for c in colors]
+    progress_lines_verr = [ax_verr.plot([], [], color=c, linewidth=1.5)[0] for c in colors]
+    progress_lines_aerr = [ax_aerr.plot([], [], color=c, linewidth=1.5)[0] for c in colors]
 
     # Time indicators
     time_line_perr = ax_perr.axvline(x=0, color="gray", linestyle="--", alpha=0.5)
@@ -343,17 +346,23 @@ def create_animation(
 
         fig.suptitle(
             f"ESKF Drone State Estimation — t = {current_t:.1f} s  "
-            f"|  3-sig dth: ({np.degrees(3*hist['att_std'][i, 0]):.1f}°, "
-            f"{np.degrees(3*hist['att_std'][i, 1]):.1f}°, "
-            f"{np.degrees(3*hist['att_std'][i, 2]):.1f}°)",
+            f"|  3-sig dth: ({np.degrees(3 * hist['att_std'][i, 0]):.1f}°, "
+            f"{np.degrees(3 * hist['att_std'][i, 1]):.1f}°, "
+            f"{np.degrees(3 * hist['att_std'][i, 2]):.1f}°)",
             fontsize=12,
             fontweight="bold",
         )
 
         return (
-            line_est_3d, dot_true_3d, dot_est_3d,
-            *progress_lines_perr, *progress_lines_verr, *progress_lines_aerr,
-            time_line_perr, time_line_verr, time_line_aerr,
+            line_est_3d,
+            dot_true_3d,
+            dot_est_3d,
+            *progress_lines_perr,
+            *progress_lines_verr,
+            *progress_lines_aerr,
+            time_line_perr,
+            time_line_verr,
+            time_line_aerr,
         )
 
     # ---- Create animation ----
@@ -387,23 +396,32 @@ def create_animation(
 def main() -> None:
     parser = argparse.ArgumentParser(description="ESKF drone demo with animation")
     parser.add_argument(
-        "--save", type=str, default=None,
+        "--save",
+        type=str,
+        default=None,
         help="Save animation to file (e.g. demo.mp4) instead of showing interactively.",
     )
     parser.add_argument(
-        "--no-animate", action="store_true",
+        "--no-animate",
+        action="store_true",
         help="Skip animation; just run filter and print final statistics.",
     )
     parser.add_argument(
-        "--duration", type=float, default=30.0,
+        "--duration",
+        type=float,
+        default=30.0,
         help="Simulation duration in seconds (default: 30).",
     )
     parser.add_argument(
-        "--seed", type=int, default=42,
+        "--seed",
+        type=int,
+        default=42,
         help="Random seed (default: 42).",
     )
     parser.add_argument(
-        "--speed", type=float, default=1.0,
+        "--speed",
+        type=float,
+        default=1.0,
         help="Playback speed multiplier (default: 1).",
     )
     args = parser.parse_args()
@@ -423,13 +441,25 @@ def main() -> None:
         init_p=sim["p"][0] + rng_init.normal(scale=0.5, size=3),
         init_v=sim["v"][0] + rng_init.normal(scale=0.2, size=3),
         init_q=sim["q"][0],
-        init_P_diag=np.array([
-            0.5, 0.5, 0.5,     # pos
-            0.2, 0.2, 0.2,     # vel
-            0.05, 0.05, 0.1,    # att (yaw more uncertain)
-            0.005, 0.005, 0.005,  # gyro bias
-            0.02, 0.02, 0.02,     # accel bias
-        ]),
+        init_P_diag=np.array(
+            [
+                0.5,
+                0.5,
+                0.5,  # pos
+                0.2,
+                0.2,
+                0.2,  # vel
+                0.05,
+                0.05,
+                0.1,  # att (yaw more uncertain)
+                0.005,
+                0.005,
+                0.005,  # gyro bias
+                0.02,
+                0.02,
+                0.02,  # accel bias
+            ]
+        ),
     )
 
     print("Running ESKF …")
@@ -451,17 +481,20 @@ def main() -> None:
             rmse = np.sqrt(np.mean(err[tail, j] ** 2))
             mean_e = np.mean(err[tail, j])
             std_e = np.std(err[tail, j])
-            print(f"    {lbl:>12s}:  RMSE = {rmse:8.4f} {unit}  "
-                  f"Mean = {mean_e:+.4f} {unit}  Std = {std_e:.4f} {unit}")
+            print(
+                f"    {lbl:>12s}:  RMSE = {rmse:8.4f} {unit}  "
+                f"Mean = {mean_e:+.4f} {unit}  Std = {std_e:.4f} {unit}"
+            )
 
     print_stats("Position Error", pos_err, "m", ["North", "East", "Down"])
     print_stats("Velocity Error", vel_err, "m/s", ["Vn", "Ve", "Vd"])
     att_total = attitude_error_total_deg(att_err)
-    print_stats("Attitude Error (rot vec)", att_err, "deg",
-                ["dth_x (N)", "dth_y (E)", "dth_z (D)"])
-    print(f"\n    {'Total angle':>12s}:  RMSE = {np.sqrt(np.mean(att_total[tail]**2)):8.4f} deg"
-          f"  Mean = {np.mean(att_total[tail]):+.4f} deg"
-          f"  Std = {np.std(att_total[tail]):.4f} deg")
+    print_stats("Attitude Error (rot vec)", att_err, "deg", ["dth_x (N)", "dth_y (E)", "dth_z (D)"])
+    print(
+        f"\n    {'Total angle':>12s}:  RMSE = {np.sqrt(np.mean(att_total[tail] ** 2)):8.4f} deg"
+        f"  Mean = {np.mean(att_total[tail]):+.4f} deg"
+        f"  Std = {np.std(att_total[tail]):.4f} deg"
+    )
 
     # Bias estimation quality
     bg_err = hist["b_g_est"] - sim["b_g_true"]

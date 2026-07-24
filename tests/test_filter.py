@@ -108,6 +108,7 @@ class TestPredict:
         kf.predict(w_m, a_m, dt)
         # After dt, q should be rotated about z by w*dt = 0.01 rad
         from kf_drone.utils import quat_exp
+
         expected_q = quat_exp(np.array([0.0, 0.0, 0.01]))
         np.testing.assert_allclose(kf.attitude, expected_q, atol=1e-10)
 
@@ -210,8 +211,7 @@ class TestStdAccessors:
         kf.predict(np.array([0.01, 0.0, 0.0]), np.array([0.0, 0.0, -9.81]), dt=0.01)
         pos_before = kf.get_position_std().copy()
 
-        kf.update_gps(p_meas=np.array([0.0, 0.0, 0.0]),
-                       v_meas=np.array([0.0, 0.0, 0.0]))
+        kf.update_gps(p_meas=np.array([0.0, 0.0, 0.0]), v_meas=np.array([0.0, 0.0, 0.0]))
         pos_after = kf.get_position_std()
 
         assert np.all(pos_after <= pos_before)

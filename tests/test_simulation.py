@@ -147,9 +147,25 @@ class TestRunSimulation:
     def test_returns_merged_dict(self):
         result = run_simulation(duration=1.0, dt=0.01, seed=42)
         # Should contain both trajectory and sensor keys
-        for key in ["t", "p", "v", "a", "q", "w_body", "a_body", "sf_body",
-                     "w_meas", "a_meas", "b_g_true", "b_a_true",
-                     "gps_t", "gps_p", "gps_v", "baro_t", "baro_alt"]:
+        for key in [
+            "t",
+            "p",
+            "v",
+            "a",
+            "q",
+            "w_body",
+            "a_body",
+            "sf_body",
+            "w_meas",
+            "a_meas",
+            "b_g_true",
+            "b_a_true",
+            "gps_t",
+            "gps_p",
+            "gps_v",
+            "baro_t",
+            "baro_alt",
+        ]:
             assert key in result, f"Missing key: {key}"
 
     def test_reproducible_with_seed(self):

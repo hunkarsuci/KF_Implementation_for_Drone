@@ -60,13 +60,15 @@ class ErrorState:
 
     def as_vector(self) -> NDArray[np.float64]:
         """Flatten to a 15-element vector."""
-        return np.concatenate([
-            self.delta_p,
-            self.delta_v,
-            self.delta_theta,
-            self.delta_b_g,
-            self.delta_b_a,
-        ])
+        return np.concatenate(
+            [
+                self.delta_p,
+                self.delta_v,
+                self.delta_theta,
+                self.delta_b_g,
+                self.delta_b_a,
+            ]
+        )
 
     def from_vector(self, vec: NDArray[np.float64]) -> None:
         """Set all error components from a 15-element vector."""
@@ -118,9 +120,11 @@ def error_reset_jacobian(delta_theta: NDArray[np.float64]) -> NDArray[np.float64
     G = np.eye(ErrorState.DIM, dtype=np.float64)
     # Attitude block: G_θθ = I - ½ [δθ]×
     th = delta_theta
-    G[6:9, 6:9] = np.array([
-        [1.0,      0.5 * th[2], -0.5 * th[1]],
-        [-0.5 * th[2], 1.0,       0.5 * th[0]],
-        [0.5 * th[1], -0.5 * th[0], 1.0      ],
-    ])
+    G[6:9, 6:9] = np.array(
+        [
+            [1.0, 0.5 * th[2], -0.5 * th[1]],
+            [-0.5 * th[2], 1.0, 0.5 * th[0]],
+            [0.5 * th[1], -0.5 * th[0], 1.0],
+        ]
+    )
     return G

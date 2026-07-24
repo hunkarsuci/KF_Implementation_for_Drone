@@ -87,15 +87,25 @@ class ESKF:
             # Sensible defaults for a small drone
             init_P_diag = np.array(
                 [
-                    0.1, 0.1, 0.1,  # position error
-                    0.1, 0.1, 0.1,  # velocity error
-                    0.01, 0.01, 0.01,  # attitude error (rad)
-                    0.001, 0.001, 0.001,  # gyro bias error (rad/s)
-                    0.01, 0.01, 0.01,  # accel bias error (m/s²)
+                    0.1,
+                    0.1,
+                    0.1,  # position error
+                    0.1,
+                    0.1,
+                    0.1,  # velocity error
+                    0.01,
+                    0.01,
+                    0.01,  # attitude error (rad)
+                    0.001,
+                    0.001,
+                    0.001,  # gyro bias error (rad/s)
+                    0.01,
+                    0.01,
+                    0.01,  # accel bias error (m/s²)
                 ],
                 dtype=np.float64,
             )
-        self.P = np.diag(init_P_diag ** 2)
+        self.P = np.diag(init_P_diag**2)
 
         # --- IMU noise parameters (used for process noise Q) ---
         self.sigma_g = sigma_g
@@ -182,10 +192,10 @@ class ESKF:
         # Measurement noise contributes as σ²·dt to the integrated quantity.
         # Bias random walks contribute as σ²·dt (continuous random walk).
         Q_block = np.zeros((12, 12), dtype=np.float64)
-        Q_block[0:3, 0:3] = (self.sigma_a ** 2) * dt * np.eye(3)  # accel noise
-        Q_block[3:6, 3:6] = (self.sigma_g ** 2) * dt * np.eye(3)  # gyro noise
-        Q_block[6:9, 6:9] = (self.sigma_bg ** 2) * dt * np.eye(3)  # gyro bias RW
-        Q_block[9:12, 9:12] = (self.sigma_ba ** 2) * dt * np.eye(3)  # accel bias RW
+        Q_block[0:3, 0:3] = (self.sigma_a**2) * dt * np.eye(3)  # accel noise
+        Q_block[3:6, 3:6] = (self.sigma_g**2) * dt * np.eye(3)  # gyro noise
+        Q_block[6:9, 6:9] = (self.sigma_bg**2) * dt * np.eye(3)  # gyro bias RW
+        Q_block[9:12, 9:12] = (self.sigma_ba**2) * dt * np.eye(3)  # accel bias RW
 
         Q_d = F_i @ Q_block @ F_i.T
 
@@ -226,8 +236,8 @@ class ESKF:
 
         # Measurement noise covariance R
         R = np.zeros((6, 6), dtype=np.float64)
-        R[0:3, 0:3] = (sigma_pos ** 2) * np.eye(3)
-        R[3:6, 3:6] = (sigma_vel ** 2) * np.eye(3)
+        R[0:3, 0:3] = (sigma_pos**2) * np.eye(3)
+        R[3:6, 3:6] = (sigma_vel**2) * np.eye(3)
 
         self._apply_update(H, innovation, R)
 
@@ -251,7 +261,7 @@ class ESKF:
         H = np.zeros((1, ErrorState.DIM), dtype=np.float64)
         H[0, 2] = -1.0  # altitude = -p_z, so ∂alt/∂δp_z = -1
 
-        R = np.array([[sigma_alt ** 2]], dtype=np.float64)
+        R = np.array([[sigma_alt**2]], dtype=np.float64)
 
         self._apply_update(H, innovation, R)
 
