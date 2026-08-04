@@ -32,7 +32,13 @@ Thumbs.db
 .pytest_cache/
 htmlcov/
 .coverage
+.coverage.*
 coverage.xml
+
+# --- Generated evaluation artifacts ---
+examples/results.json
+examples/attitude_diagnostics.json
+artifacts/
 
 # --- Project tooling ---
 .claude/

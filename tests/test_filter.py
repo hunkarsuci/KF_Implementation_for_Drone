@@ -215,3 +215,86 @@ class TestStdAccessors:
         pos_after = kf.get_position_std()
 
         assert np.all(pos_after <= pos_before)
+
+
+class TestQuaternionNormPreservation:
+    def test_predict_preserves_unit_norm(self):
+        """Quaternion must remain unit-norm after repeated predict steps."""
+        rng = np.random.default_rng(123)
+        kf = ESKF()
+        for _ in range(500):
+            w_m = rng.normal(scale=0.1, size=3)
+            a_m = np.array([0.0, 0.0, -9.81]) + rng.normal(scale=0.5, size=3)
+            kf.predict(w_m, a_m, dt=0.01)
+            q_norm = np.linalg.norm(kf.attitude)
+            assert abs(q_norm - 1.0) < 1e-12, f"Quaternion norm drifted to {q_norm}"
+
+    def test_predict_update_preserves_unit_norm(self):
+        """Quaternion must remain unit-norm through predict + GPS + baro cycles."""
+        rng = np.random.default_rng(456)
+        kf = ESKF()
+        for i in range(200):
+            w_m = rng.normal(scale=0.2, size=3)
+            a_m = np.array([0.0, 0.0, -9.81]) + rng.normal(scale=1.0, size=3)
+            kf.predict(w_m, a_m, dt=0.01)
+
+            if i % 10 == 0:
+                kf.update_gps(
+                    p_meas=rng.normal(scale=2.0, size=3),
+                    v_meas=rng.normal(scale=0.5, size=3),
+                )
+            if i % 5 == 0:
+                kf.update_baro(alt_meas=rng.normal(scale=0.5))
+
+            q_norm = np.linalg.norm(kf.attitude)
+            assert abs(q_norm - 1.0) < 1e-12, (
+                f"Quaternion norm drifted to {q_norm} at step {i}"
+            )
+
+
+class TestCovarianceSymmetry:
+    def test_symmetry_through_predict_gps_baro_cycle(self):
+        """Covariance must remain symmetric through full predict-update cycles."""
+        rng = np.random.default_rng(789)
+        kf = ESKF(sigma_g=0.01, sigma_a=0.05, sigma_bg=0.001, sigma_ba=0.01)
+
+        for i in range(100):
+            w_m = rng.normal(scale=0.1, size=3)
+            a_m = np.array([0.0, 0.0, -9.81]) + rng.normal(scale=0.5, size=3)
+            kf.predict(w_m, a_m, dt=0.01)
+
+            if i % 10 == 0:
+                kf.update_gps(
+                    p_meas=rng.normal(scale=2.0, size=3),
+                    v_meas=rng.normal(scale=0.5, size=3),
+                )
+            if i % 5 == 0:
+                kf.update_baro(alt_meas=rng.normal(scale=0.5))
+
+            P = kf.covariance
+            np.testing.assert_allclose(P, P.T, atol=1e-12,
+                                       err_msg=f"Covariance asymmetry at step {i}")
+
+
+class TestCovariancePSD:
+    def test_covariance_eigenvalues_nonnegative(self):
+        """All eigenvalues of P must be ≥ 0 after predict and update steps."""
+        rng = np.random.default_rng(101)
+        kf = ESKF(sigma_g=0.01, sigma_a=0.05, sigma_bg=0.001, sigma_ba=0.01)
+
+        for i in range(50):
+            w_m = rng.normal(scale=0.1, size=3)
+            a_m = np.array([0.0, 0.0, -9.81]) + rng.normal(scale=0.5, size=3)
+            kf.predict(w_m, a_m, dt=0.01)
+
+            if i % 5 == 0:
+                kf.update_gps(
+                    p_meas=rng.normal(scale=2.0, size=3),
+                    v_meas=rng.normal(scale=0.5, size=3),
+                )
+
+            P = kf.covariance
+            eigvals = np.linalg.eigvalsh(P)
+            assert np.all(eigvals >= -1e-12), (
+                f"Negative eigenvalue at step {i}: min={eigvals.min():.2e}"
+            )
