@@ -74,8 +74,9 @@ def _find_block_name(row: int, col: int) -> str:
 # ---------------------------------------------------------------------------
 
 
-def finite_diff_F_x(kf: ESKF, w_m: np.ndarray, a_m: np.ndarray,
-                    dt: float, eps: float = EPS) -> np.ndarray:
+def finite_diff_F_x(
+    kf: ESKF, w_m: np.ndarray, a_m: np.ndarray, dt: float, eps: float = EPS
+) -> np.ndarray:
     """F_x via finite differences of the nominal-state predict step."""
     kf_ref = _clone_kf(kf)
     kf_ref.predict(w_m.copy(), a_m.copy(), dt)
@@ -225,11 +226,12 @@ def main() -> None:
             f_max_rel = max_rel
             f_max_block = block_name
 
-        print(f"  Trial {trial+1}: max |d| = {max_abs:.2e}  "
-              f"rel = {max_rel:.2e}  block = {block_name}")
+        print(
+            f"  Trial {trial + 1}: max |d| = {max_abs:.2e}  "
+            f"rel = {max_rel:.2e}  block = {block_name}"
+        )
 
-    print(f"\n  Overall max |d|: {f_max_abs:.2e}  (rel: {f_max_rel:.2e}) "
-          f"in block {f_max_block}")
+    print(f"\n  Overall max |d|: {f_max_abs:.2e}  (rel: {f_max_rel:.2e}) in block {f_max_block}")
     print("  The largest discrepancy is in the dp/dth block because the")
     print("  analytical F_x omits the O(dt^2) second-order position term")
     print("  (0.5*R*[a_corr]_x*dt^2 ~ 5e-4 for dt=0.01). All other blocks")
@@ -248,7 +250,7 @@ def main() -> None:
         H_a[3:6, 3:6] = np.eye(3)
         H_fd = finite_diff_H_gps(kf)
         max_abs = float(np.max(np.abs(H_a - H_fd)))
-        print(f"  Trial {trial+1}: max |d| = {max_abs:.2e}")
+        print(f"  Trial {trial + 1}: max |d| = {max_abs:.2e}")
     print("  Analytical and FD match within numerical precision.")
 
     # ---- H_baro ----
@@ -259,7 +261,7 @@ def main() -> None:
         H_a[0, 2] = -1.0
         H_fd = finite_diff_H_baro(kf)
         max_abs = float(np.max(np.abs(H_a - H_fd)))
-        print(f"  Trial {trial+1}: max |d| = {max_abs:.2e}")
+        print(f"  Trial {trial + 1}: max |d| = {max_abs:.2e}")
     print("  Analytical and FD match within numerical precision.")
 
     print("\n" + "=" * 60)

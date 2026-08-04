@@ -247,9 +247,7 @@ class TestQuaternionNormPreservation:
                 kf.update_baro(alt_meas=rng.normal(scale=0.5))
 
             q_norm = np.linalg.norm(kf.attitude)
-            assert abs(q_norm - 1.0) < 1e-12, (
-                f"Quaternion norm drifted to {q_norm} at step {i}"
-            )
+            assert abs(q_norm - 1.0) < 1e-12, f"Quaternion norm drifted to {q_norm} at step {i}"
 
 
 class TestCovarianceSymmetry:
@@ -272,8 +270,9 @@ class TestCovarianceSymmetry:
                 kf.update_baro(alt_meas=rng.normal(scale=0.5))
 
             P = kf.covariance
-            np.testing.assert_allclose(P, P.T, atol=1e-12,
-                                       err_msg=f"Covariance asymmetry at step {i}")
+            np.testing.assert_allclose(
+                P, P.T, atol=1e-12, err_msg=f"Covariance asymmetry at step {i}"
+            )
 
 
 class TestCovariancePSD:
