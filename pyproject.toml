@@ -30,7 +30,7 @@ demo = [
 dev = [
     "pytest>=7.4",
     "pytest-cov>=4.0",
-    "ruff>=0.4",
+    "ruff==0.16.1",
 ]
 all = [
     "kf_drone[demo,dev]",

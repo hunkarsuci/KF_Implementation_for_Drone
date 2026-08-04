@@ -136,9 +136,9 @@ def main() -> None:
     all_results = {}
 
     for seed in SEEDS:
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"  Seed = {seed}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         config = {
             "simulation": {**DEFAULT_CONFIG["simulation"], "duration": DURATION},
@@ -177,26 +177,36 @@ def main() -> None:
         all_results[str(seed)] = {"full": full, "tail": tail}
 
         labels = ["Roll (x)", "Pitch (y)", "Yaw (z)"]
-        print(f"\n  Tail-{TAIL_FRACTION*100:.0f}% RMSE:")
+        print(f"\n  Tail-{TAIL_FRACTION * 100:.0f}% RMSE:")
         print(f"    {'Metric':<18s}: {'Full':>8s}  {'Tail':>8s}")
-        print(f"    {'-'*36}")
-        print(f"    {'Geodesic angle':<18s}:"
-              f" {full['geodesic_rmse']:8.2f}  {tail['geodesic_rmse']:8.2f} deg")
-        print(f"    {'rot-vec dth_x (N)':<18s}:"
-              f" {full['rotvec_rmse'][0]:8.2f}  {tail['rotvec_rmse'][0]:8.2f} deg")
-        print(f"    {'rot-vec dth_y (E)':<18s}:"
-              f" {full['rotvec_rmse'][1]:8.2f}  {tail['rotvec_rmse'][1]:8.2f} deg")
-        print(f"    {'rot-vec dth_z (D)':<18s}:"
-              f" {full['rotvec_rmse'][2]:8.2f}  {tail['rotvec_rmse'][2]:8.2f} deg")
+        print(f"    {'-' * 36}")
+        print(
+            f"    {'Geodesic angle':<18s}:"
+            f" {full['geodesic_rmse']:8.2f}  {tail['geodesic_rmse']:8.2f} deg"
+        )
+        print(
+            f"    {'rot-vec dth_x (N)':<18s}:"
+            f" {full['rotvec_rmse'][0]:8.2f}  {tail['rotvec_rmse'][0]:8.2f} deg"
+        )
+        print(
+            f"    {'rot-vec dth_y (E)':<18s}:"
+            f" {full['rotvec_rmse'][1]:8.2f}  {tail['rotvec_rmse'][1]:8.2f} deg"
+        )
+        print(
+            f"    {'rot-vec dth_z (D)':<18s}:"
+            f" {full['rotvec_rmse'][2]:8.2f}  {tail['rotvec_rmse'][2]:8.2f} deg"
+        )
         print()
         for j, lbl in enumerate(labels):
-            print(f"    Euler {lbl:<12s}:"
-                  f" {full['euler_rmse'][j]:8.2f}  {tail['euler_rmse'][j]:8.2f} deg")
+            print(
+                f"    Euler {lbl:<12s}:"
+                f" {full['euler_rmse'][j]:8.2f}  {tail['euler_rmse'][j]:8.2f} deg"
+            )
 
     # --- Cross-seed summary ---
-    print(f"\n{'='*60}")
-    print(f"  CROSS-SEED SUMMARY (tail {TAIL_FRACTION*100:.0f}%)")
-    print(f"{'='*60}")
+    print(f"\n{'=' * 60}")
+    print(f"  CROSS-SEED SUMMARY (tail {TAIL_FRACTION * 100:.0f}%)")
+    print(f"{'=' * 60}")
     print(f"  Seeds: {SEEDS}")
     print()
     print("  Euler-angle RMSE values are NOT an additive decomposition of the")
@@ -207,21 +217,27 @@ def main() -> None:
     euler_labels = ["Roll (x)", "Pitch (y)", "Yaw (z)"]
     for j, lbl in enumerate(euler_labels):
         vals = [all_results[str(s)]["tail"]["euler_rmse"][j] for s in SEEDS]
-        print(f"  Euler {lbl:<12s}: "
-              f"mean={np.mean(vals):.2f}  min={np.min(vals):.2f}"
-              f"  max={np.max(vals):.2f}  std={np.std(vals):.2f} deg")
+        print(
+            f"  Euler {lbl:<12s}: "
+            f"mean={np.mean(vals):.2f}  min={np.min(vals):.2f}"
+            f"  max={np.max(vals):.2f}  std={np.std(vals):.2f} deg"
+        )
 
     rv_labels = ["dth_x (N)", "dth_y (E)", "dth_z (D)"]
     for j, lbl in enumerate(rv_labels):
         vals = [all_results[str(s)]["tail"]["rotvec_rmse"][j] for s in SEEDS]
-        print(f"  Rot-vec {lbl:<12s}: "
-              f"mean={np.mean(vals):.2f}  min={np.min(vals):.2f}"
-              f"  max={np.max(vals):.2f}  std={np.std(vals):.2f} deg")
+        print(
+            f"  Rot-vec {lbl:<12s}: "
+            f"mean={np.mean(vals):.2f}  min={np.min(vals):.2f}"
+            f"  max={np.max(vals):.2f}  std={np.std(vals):.2f} deg"
+        )
 
     geod_vals = [all_results[str(s)]["tail"]["geodesic_rmse"] for s in SEEDS]
-    print(f"  Geodesic total  : "
-          f"mean={np.mean(geod_vals):.2f}  min={np.min(geod_vals):.2f}"
-          f"  max={np.max(geod_vals):.2f}  std={np.std(geod_vals):.2f} deg")
+    print(
+        f"  Geodesic total  : "
+        f"mean={np.mean(geod_vals):.2f}  min={np.min(geod_vals):.2f}"
+        f"  max={np.max(geod_vals):.2f}  std={np.std(geod_vals):.2f} deg"
+    )
 
     if args.output:
         out_path = Path(args.output)

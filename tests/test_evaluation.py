@@ -225,9 +225,9 @@ class TestEvaluateFilterEndToEnd:
         metrics2 = compute_metrics(sim2, hist2, 0.5)
 
         for key in metrics1["summary"]:
-            assert metrics1["summary"][key] == pytest.approx(
-                metrics2["summary"][key]
-            ), f"Mismatch in {key}"
+            assert metrics1["summary"][key] == pytest.approx(metrics2["summary"][key]), (
+                f"Mismatch in {key}"
+            )
 
 
 class TestEvaluateFilterOutput:
@@ -244,7 +244,9 @@ class TestEvaluateFilterOutput:
         script = str(Path(__file__).resolve().parent.parent / "examples" / "evaluate_filter.py")
         result = subprocess.run(
             [sys.executable, script, "--duration", "1", "--seed", "42"],
-            capture_output=True, text=True, cwd=str(Path(__file__).resolve().parent.parent),
+            capture_output=True,
+            text=True,
+            cwd=str(Path(__file__).resolve().parent.parent),
         )
         assert result.returncode == 0
         # The script should NOT emit "Results written to:"
@@ -258,9 +260,18 @@ class TestEvaluateFilterOutput:
         with tempfile.TemporaryDirectory() as tmpdir:
             out_file = Path(tmpdir) / "result.json"
             result = subprocess.run(
-                [sys.executable, script, "--duration", "1", "--seed", "42",
-                 "--output", str(out_file)],
-                capture_output=True, text=True,
+                [
+                    sys.executable,
+                    script,
+                    "--duration",
+                    "1",
+                    "--seed",
+                    "42",
+                    "--output",
+                    str(out_file),
+                ],
+                capture_output=True,
+                text=True,
                 cwd=str(Path(__file__).resolve().parent.parent),
             )
             assert result.returncode == 0
@@ -280,9 +291,18 @@ class TestEvaluateFilterOutput:
         with tempfile.TemporaryDirectory() as tmpdir:
             nested = Path(tmpdir) / "subdir" / "nested" / "result.json"
             result = subprocess.run(
-                [sys.executable, script, "--duration", "1", "--seed", "42",
-                 "--output", str(nested)],
-                capture_output=True, text=True,
+                [
+                    sys.executable,
+                    script,
+                    "--duration",
+                    "1",
+                    "--seed",
+                    "42",
+                    "--output",
+                    str(nested),
+                ],
+                capture_output=True,
+                text=True,
                 cwd=str(Path(__file__).resolve().parent.parent),
             )
             assert result.returncode == 0
@@ -300,9 +320,18 @@ class TestEvaluateFilterOutput:
         with tempfile.TemporaryDirectory() as tmpdir:
             out_file = Path(tmpdir) / "result.json"
             subprocess.run(
-                [sys.executable, script, "--duration", "2", "--seed", "42",
-                 "--output", str(out_file)],
-                capture_output=True, text=True,
+                [
+                    sys.executable,
+                    script,
+                    "--duration",
+                    "2",
+                    "--seed",
+                    "42",
+                    "--output",
+                    str(out_file),
+                ],
+                capture_output=True,
+                text=True,
                 cwd=str(Path(__file__).resolve().parent.parent),
             )
             json_data = json.loads(out_file.read_text(encoding="utf-8"))
@@ -310,20 +339,48 @@ class TestEvaluateFilterOutput:
         # Recompute directly
         config = {
             "simulation": {
-                "duration": 2.0, "dt": 0.01, "amplitude_xy": 10.0, "amplitude_z": 2.0,
-                "omega_xy": 0.5, "omega_z": 1.0, "gps_rate": 10, "baro_rate": 50,
+                "duration": 2.0,
+                "dt": 0.01,
+                "amplitude_xy": 10.0,
+                "amplitude_z": 2.0,
+                "omega_xy": 0.5,
+                "omega_z": 1.0,
+                "gps_rate": 10,
+                "baro_rate": 50,
             },
             "sensors": {
-                "sigma_g": 0.01, "sigma_a": 0.05, "sigma_bg": 0.0002, "sigma_ba": 0.001,
-                "gps_sigma_pos": 1.0, "gps_sigma_vel": 0.1, "baro_sigma_alt": 0.5,
+                "sigma_g": 0.01,
+                "sigma_a": 0.05,
+                "sigma_bg": 0.0002,
+                "sigma_ba": 0.001,
+                "gps_sigma_pos": 1.0,
+                "gps_sigma_vel": 0.1,
+                "baro_sigma_alt": 0.5,
             },
             "filter": {
                 "gravity": 9.81,
-                "init_P_diag": [0.5, 0.5, 0.5, 0.2, 0.2, 0.2, 0.05, 0.05, 0.1,
-                                0.005, 0.005, 0.005, 0.02, 0.02, 0.02],
-                "init_pos_noise_std": 0.5, "init_vel_noise_std": 0.2,
+                "init_P_diag": [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.2,
+                    0.2,
+                    0.2,
+                    0.05,
+                    0.05,
+                    0.1,
+                    0.005,
+                    0.005,
+                    0.005,
+                    0.02,
+                    0.02,
+                    0.02,
+                ],
+                "init_pos_noise_std": 0.5,
+                "init_vel_noise_std": 0.2,
             },
-            "seed": 42, "tail_fraction": 0.2,
+            "seed": 42,
+            "tail_fraction": 0.2,
         }
         sim = run_simulation(duration=2.0, dt=0.01, seed=42)
         hist = run_filter(sim, config)

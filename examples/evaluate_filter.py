@@ -55,11 +55,21 @@ DEFAULT_CONFIG = {
     "filter": {
         "gravity": 9.81,
         "init_P_diag": [
-            0.5, 0.5, 0.5,
-            0.2, 0.2, 0.2,
-            0.05, 0.05, 0.1,
-            0.005, 0.005, 0.005,
-            0.02, 0.02, 0.02,
+            0.5,
+            0.5,
+            0.5,
+            0.2,
+            0.2,
+            0.2,
+            0.05,
+            0.05,
+            0.1,
+            0.005,
+            0.005,
+            0.005,
+            0.02,
+            0.02,
+            0.02,
         ],
         "init_pos_noise_std": 0.5,
         "init_vel_noise_std": 0.2,
@@ -145,12 +155,8 @@ def compute_metrics(
             "position_rmse_m": float(np.sqrt(np.mean(np.sum(pos_err[tail] ** 2, axis=1)))),
             "velocity_rmse_ms": float(np.sqrt(np.mean(np.sum(vel_err[tail] ** 2, axis=1)))),
             "attitude_total_rmse_deg": float(np.sqrt(np.mean(att_err_total[tail] ** 2))),
-            "gyro_bias_rmse_rads": float(
-                np.sqrt(np.mean(np.sum(bg_err[tail] ** 2, axis=1)))
-            ),
-            "accel_bias_rmse_ms2": float(
-                np.sqrt(np.mean(np.sum(ba_err[tail] ** 2, axis=1)))
-            ),
+            "gyro_bias_rmse_rads": float(np.sqrt(np.mean(np.sum(bg_err[tail] ** 2, axis=1)))),
+            "accel_bias_rmse_ms2": float(np.sqrt(np.mean(np.sum(ba_err[tail] ** 2, axis=1)))),
         },
     }
 
