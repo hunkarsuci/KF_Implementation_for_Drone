@@ -13,7 +13,7 @@ barometer measurements.
 This is a learning project. I wrote it to understand how an ESKF works
 by implementing one from the equations in Solà (2017) and seeing where the
 implementation diverges from the textbook case. All validation uses synthetic
-measurements — no flight data is involved.
+measurements  no flight data is involved.
 
 ## Scope
 
@@ -59,7 +59,7 @@ Gyro bias RMSE:     0.0020 rad/s
 Accel bias RMSE:    0.027 m/s²
 ```
 
-This is a **single-seed deterministic baseline** — it is not a statistical
+This is a **single-seed deterministic baseline**  it is not a statistical
 performance guarantee. The attitude geodesic RMSE is 7.81°. Euler-angle
 diagnostics (roll ~6.4°, pitch ~0.5°, yaw ~7.5°) are provided by
 `tools/diagnose_attitude.py`. Euler RMSE values are NOT an additive
@@ -158,7 +158,7 @@ pytest --cov=src/kf_drone --cov-report=term-missing
 ## Known limitations
 
 - All validation uses synthetic measurements. No flight data.
-- Results are a single-seed baseline (seed 42) — not a Monte Carlo study.
+- Results are a single-seed baseline (seed 42)  not a Monte Carlo study.
 - No magnetometer. Heading is unobservable, and yaw error may drift.
 - No innovation gating or measurement outlier rejection.
 - No NaN or infinite-value guards on incoming measurements.
@@ -211,5 +211,5 @@ pytest --cov=src/kf_drone --cov-report=term-missing
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT  see [LICENSE](LICENSE).
 
