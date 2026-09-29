@@ -13,13 +13,13 @@ barometer measurements.
 This is a learning project. I wrote it to understand how an ESKF works
 by implementing one from the equations in Solà (2017) and seeing where the
 implementation diverges from the textbook case. All validation uses synthetic
-measurements  no flight data is involved.
+measurements; no flight data is involved.
 
 ## Scope
 
 Implemented and tested:
 
-- 15-DOF error-state Kalman filter with 10-DOF nominal state
+- 15-dimensional error state with position, velocity, quaternion attitude, and two bias vectors in the nominal state
 - IMU prediction with debiased gyroscope and accelerometer readings
 - GPS position + velocity update (6-DOF measurement)
 - Barometric altitude update (1-DOF measurement)
@@ -33,7 +33,7 @@ Not yet implemented:
 - Magnetometer update (heading)
 - Outlier rejection / measurement gating
 - NaN or infinite-value guards on incoming measurements
-- Multi-rate asynchronous sensor fusion
+- Asynchronous arrival and latency handling beyond fixed-rate simulated sensors
 - Sensor calibration states
 - NEES/NIS consistency checks (requires validated covariance propagation)
 
@@ -78,7 +78,7 @@ data is used and no flight-test claims are made.
 | Gyro bias | 3 | rad/s |
 | Accel bias | 3 | m/s² |
 
-The nominal state (10 DOF) is propagated nonlinearly. The error state
+The nominal state (16 stored scalar components, with a unit-quaternion constraint) is propagated nonlinearly. The error state
 (15 DOF: δp, δv, δθ, δb_g, δb_a) is estimated by a linear Kalman filter.
 After each correction, the error is injected into the nominal state and
 reset to zero, with the covariance transformed by the reset Jacobian.
@@ -158,7 +158,7 @@ pytest --cov=src/kf_drone --cov-report=term-missing
 ## Known limitations
 
 - All validation uses synthetic measurements. No flight data.
-- Results are a single-seed baseline (seed 42)  not a Monte Carlo study.
+- Results are a single-seed baseline (seed 42), not a Monte Carlo study.
 - No magnetometer. Heading is unobservable, and yaw error may drift.
 - No innovation gating or measurement outlier rejection.
 - No NaN or infinite-value guards on incoming measurements.
@@ -186,10 +186,7 @@ pytest --cov=src/kf_drone --cov-report=term-missing
   current first-order discrete-time approximation. Its effect over longer
   propagation intervals, especially during extended GPS outages, has not
   yet been quantified and should be investigated separately.
-- The active repository virtual environment uses Python 3.11.15. This
-  satisfies the current project requirement of Python 3.11 or newer.
-  Reproducibility across the other supported Python versions depends on
-  the configured CI matrix.
+- Results may vary slightly across Python and dependency versions; use the documented seed and environment to compare.
 - The current validation uses synthetic measurements and deterministic
   simulation scenarios. It does not constitute validation using flight
   data or hardware measurements.
@@ -211,5 +208,5 @@ pytest --cov=src/kf_drone --cov-report=term-missing
 
 ## License
 
-MIT  see [LICENSE](LICENSE).
+MIT; see [LICENSE](LICENSE).
 
