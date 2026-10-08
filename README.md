@@ -2,6 +2,10 @@
 
 [![CI](https://github.com/hunkarsuci/KF_Implementation_for_Drone/actions/workflows/ci.yml/badge.svg)](https://github.com/hunkarsuci/KF_Implementation_for_Drone/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
+[![NumPy 1.26+](https://img.shields.io/badge/NumPy-1.26%2B-013243.svg?logo=numpy&logoColor=white)](https://numpy.org/)
+[![SciPy 1.11+](https://img.shields.io/badge/SciPy-1.11%2B-8CAAE6.svg?logo=scipy&logoColor=white)](https://scipy.org/)
+[![Lint and format: Ruff](https://img.shields.io/badge/lint%20%26%20format-Ruff-d7ff64.svg)](https://github.com/astral-sh/ruff)
 
 Error-State Kalman Filter (ESKF) for 3D drone state estimation, following
 Joan Solà's [tutorial](https://arxiv.org/abs/1711.02508). Estimates position,
