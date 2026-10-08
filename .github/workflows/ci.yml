@@ -30,6 +30,8 @@ jobs:
         run: |
           python -m pytest tests/ -v --tb=short --cov=src/kf_drone --cov-report=term-missing
 
+      - name: Smoke test real-time replay
+        run: python examples/realtime_sim.py --duration 0.1 --speed 1000
       - name: Run baseline evaluation
         run: |
           python examples/evaluate_filter.py --duration 5 --seed 42 --output "${{ runner.temp }}/eskf-results.json"
