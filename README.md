@@ -132,6 +132,21 @@ python examples/animate_demo.py --no-animate
 
 `examples/realtime_sim.py` replays the synthetic IMU, GPS, and barometer streams against wall-clock time. It keeps the lower-rate GPS and barometer updates timestamped, prints live filter status, and can show a lightweight trajectory/error plot.
 
+```mermaid
+flowchart TD
+    T["Synthetic trajectory"] --> S["Sensor streams"]
+    S --> I["IMU · 100 Hz"]
+    S --> G["GPS · 10 Hz"]
+    S --> B["Barometer · 50 Hz"]
+    I --> R["Timestamped wall-clock replay"]
+    G --> R
+    B --> R
+    R --> F["ESKF predict + update"]
+    F --> O["Terminal status + live plot"]
+```
+
+Each sensor stream is generated from the same ground-truth trajectory, then delivered to the filter at its own rate during the replay.
+
 ```bash
 # Run at real time for 10 seconds
 python examples/realtime_sim.py
