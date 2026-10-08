@@ -118,10 +118,7 @@ def run_realtime(
     next_status = 0.0
     wall_start = time.monotonic()
 
-    print(
-        f"Replaying {t[-1]:.1f}s of simulated sensors at {speed:g}x speed "
-        f"(Ctrl-C to stop)"
-    )
+    print(f"Replaying {t[-1]:.1f}s of simulated sensors at {speed:g}x speed (Ctrl-C to stop)")
     try:
         for i, sim_t in enumerate(t):
             deadline = wall_start + float(sim_t) / speed
