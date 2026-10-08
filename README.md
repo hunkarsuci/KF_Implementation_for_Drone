@@ -128,6 +128,23 @@ python examples/animate_demo.py
 python examples/animate_demo.py --no-animate
 ```
 
+## Real-time simulation
+
+`examples/realtime_sim.py` replays the synthetic IMU, GPS, and barometer streams against wall-clock time. It keeps the lower-rate GPS and barometer updates timestamped, prints live filter status, and can show a lightweight trajectory/error plot.
+
+```bash
+# Run at real time for 10 seconds
+python examples/realtime_sim.py
+
+# Run twice as fast for 30 seconds
+python examples/realtime_sim.py --duration 30 --speed 2
+
+# Add a live matplotlib view (requires the demo extra)
+pip install -e ".[demo]"
+python examples/realtime_sim.py --duration 20 --plot
+```
+
+This is a timing and visualization demo, not hardware-in-the-loop: all sensor samples are generated before replay. The next steps for a flight-ready integration are live sensor adapters, timestamp and latency handling, packet drop/outlier injection, and a safety layer around invalid measurements.
 ## Diagnostic tools
 
 ```bash
