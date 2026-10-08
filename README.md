@@ -134,7 +134,7 @@ python examples/animate_demo.py --no-animate
 
 ![Animated quadcopter following the simulated figure-8 trajectory](docs/drone_simulation.gif)
 
-*The preview uses the repository's synthetic figure-8 trajectory and ESKF estimate. Blue shows the simulated drone and trajectory; red shows the estimated path.*
+*The preview runs one complete 4π-second figure-8 period from the repository's synthetic trajectory and ESKF estimate. Blue shows the simulated drone and trajectory; red shows the estimated path.*
 
 ```bash
 # Run at real time for 10 seconds
