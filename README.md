@@ -2,6 +2,10 @@
 
 [![CI](https://github.com/hunkarsuci/KF_Implementation_for_Drone/actions/workflows/ci.yml/badge.svg)](https://github.com/hunkarsuci/KF_Implementation_for_Drone/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
+[![NumPy 1.26+](https://img.shields.io/badge/NumPy-1.26%2B-013243.svg?logo=numpy&logoColor=white)](https://numpy.org/)
+[![SciPy 1.11+](https://img.shields.io/badge/SciPy-1.11%2B-8CAAE6.svg?logo=scipy&logoColor=white)](https://scipy.org/)
+[![Lint and format: Ruff](https://img.shields.io/badge/lint%20%26%20format-Ruff-d7ff64.svg)](https://github.com/astral-sh/ruff)
 
 Error-State Kalman Filter (ESKF) for 3D drone state estimation, following
 Joan Solà's [tutorial](https://arxiv.org/abs/1711.02508). Estimates position,
@@ -13,13 +17,13 @@ barometer measurements.
 This is a learning project. I wrote it to understand how an ESKF works
 by implementing one from the equations in Solà (2017) and seeing where the
 implementation diverges from the textbook case. All validation uses synthetic
-measurements — no flight data is involved.
+measurements; no flight data is involved.
 
 ## Scope
 
 Implemented and tested:
 
-- 15-DOF error-state Kalman filter with 10-DOF nominal state
+- 15-dimensional error state with position, velocity, quaternion attitude, and two bias vectors in the nominal state
 - IMU prediction with debiased gyroscope and accelerometer readings
 - GPS position + velocity update (6-DOF measurement)
 - Barometric altitude update (1-DOF measurement)
@@ -33,7 +37,7 @@ Not yet implemented:
 - Magnetometer update (heading)
 - Outlier rejection / measurement gating
 - NaN or infinite-value guards on incoming measurements
-- Multi-rate asynchronous sensor fusion
+- Asynchronous arrival and latency handling beyond fixed-rate simulated sensors
 - Sensor calibration states
 - NEES/NIS consistency checks (requires validated covariance propagation)
 
@@ -59,7 +63,7 @@ Gyro bias RMSE:     0.0020 rad/s
 Accel bias RMSE:    0.027 m/s²
 ```
 
-This is a **single-seed deterministic baseline** — it is not a statistical
+This is a **single-seed deterministic baseline**  it is not a statistical
 performance guarantee. The attitude geodesic RMSE is 7.81°. Euler-angle
 diagnostics (roll ~6.4°, pitch ~0.5°, yaw ~7.5°) are provided by
 `tools/diagnose_attitude.py`. Euler RMSE values are NOT an additive
@@ -78,7 +82,7 @@ data is used and no flight-test claims are made.
 | Gyro bias | 3 | rad/s |
 | Accel bias | 3 | m/s² |
 
-The nominal state (10 DOF) is propagated nonlinearly. The error state
+The nominal state (16 stored scalar components, with a unit-quaternion constraint) is propagated nonlinearly. The error state
 (15 DOF: δp, δv, δθ, δb_g, δb_a) is estimated by a linear Kalman filter.
 After each correction, the error is injected into the nominal state and
 reset to zero, with the covariance transformed by the reset Jacobian.
@@ -124,6 +128,27 @@ python examples/animate_demo.py
 python examples/animate_demo.py --no-animate
 ```
 
+## Real-time simulation
+
+`examples/realtime_sim.py` replays the synthetic IMU, GPS, and barometer streams against wall-clock time. It keeps the lower-rate GPS and barometer updates timestamped, prints live filter status, and can show a lightweight trajectory/error plot.
+
+![Animated quadcopter following the simulated figure-8 trajectory](docs/drone_simulation.gif)
+
+*The preview runs one complete 4π-second figure-8 period from the repository's synthetic trajectory and ESKF estimate. Blue shows the simulated drone and trajectory; red shows the estimated path.*
+
+```bash
+# Run at real time for 10 seconds
+python examples/realtime_sim.py
+
+# Run twice as fast for 30 seconds
+python examples/realtime_sim.py --duration 30 --speed 2
+
+# Add a live matplotlib view (requires the demo extra)
+pip install -e ".[demo]"
+python examples/realtime_sim.py --duration 20 --plot
+```
+
+This is a timing and visualization demo, not hardware-in-the-loop: all sensor samples are generated before replay. The next steps for a flight-ready integration are live sensor adapters, timestamp and latency handling, packet drop/outlier injection, and a safety layer around invalid measurements.
 ## Diagnostic tools
 
 ```bash
@@ -158,7 +183,7 @@ pytest --cov=src/kf_drone --cov-report=term-missing
 ## Known limitations
 
 - All validation uses synthetic measurements. No flight data.
-- Results are a single-seed baseline (seed 42) — not a Monte Carlo study.
+- Results are a single-seed baseline (seed 42), not a Monte Carlo study.
 - No magnetometer. Heading is unobservable, and yaw error may drift.
 - No innovation gating or measurement outlier rejection.
 - No NaN or infinite-value guards on incoming measurements.
@@ -186,10 +211,7 @@ pytest --cov=src/kf_drone --cov-report=term-missing
   current first-order discrete-time approximation. Its effect over longer
   propagation intervals, especially during extended GPS outages, has not
   yet been quantified and should be investigated separately.
-- The active repository virtual environment uses Python 3.11.15. This
-  satisfies the current project requirement of Python 3.11 or newer.
-  Reproducibility across the other supported Python versions depends on
-  the configured CI matrix.
+- Results may vary slightly across Python and dependency versions; use the documented seed and environment to compare.
 - The current validation uses synthetic measurements and deterministic
   simulation scenarios. It does not constitute validation using flight
   data or hardware measurements.
@@ -211,5 +233,5 @@ pytest --cov=src/kf_drone --cov-report=term-missing
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT; see [LICENSE](LICENSE).
 
